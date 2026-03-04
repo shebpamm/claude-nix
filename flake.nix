@@ -33,6 +33,6 @@
             hello = true; # <- set to true to exclude from being built into `packages.*.*` flake output
           };
         };
-      flake.wrappers.claude = ./wrapper.nix;
+      flake.wrappers.default = ./wrapper.nix;
     };
 }
