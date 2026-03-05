@@ -21,10 +21,6 @@
   };
 
   config.package = pkgs.claude-code;
-  config.extraPackages = [ ]
-    ++ lib.optionals config.kubernetes [ pkgs.mcp-k8s-go ]
-    ++ lib.optionals config.nixos [ pkgs.mcp-nixos ];
-
   config.flags."--mcp-config" =
     let
       mcps = {
