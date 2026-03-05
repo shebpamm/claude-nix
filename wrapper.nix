@@ -30,8 +30,8 @@
       mcps = {
         mcpServers = {
           k8s = {
-            # type = "stdio";
             command = "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go";
+            args = [ "--readonly" ];
           };
           nixos = {
             command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
