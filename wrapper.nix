@@ -20,29 +20,42 @@
     };
   };
 
-  config.package = pkgs.claude-code;
-  config.flags."--mcp-config" =
+  config =
     let
-      mcps = {
-        mcpServers = {
-          k8s = {
-            command = "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go";
-            args = [ "--readonly" ];
-          };
-          nixos = {
-            command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
-            args = [ ];
-          };
-        };
-      };
-
-      kubeMcpConfig = pkgs.writeTextFile {
-        name = "kube-mcp-config.json";
-        text = builtins.toJSON mcps;
-      };
-
+      ccusage = pkgs.callPackage ./packages/ccusage.nix { };
     in
-    (lib.strings.join "," (
-      lib.optional config.kubernetes kubeMcpConfig.outPath
-    ));
+    {
+      package = pkgs.claude-code;
+
+      extraPackages = [ ccusage ];
+
+      flags."--mcp-config" =
+        let
+          mcps = {
+            mcpServers = {
+              k8s = {
+                command = "${pkgs.mcp-k8s-go}/bin/mcp-k8s-go";
+                args = [ "--readonly" ];
+              };
+              nixos = {
+                command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
+                args = [ ];
+              };
+              ccusage = {
+                command = "${ccusage}/bin/ccusage-mcp";
+                args = [ ];
+              };
+            };
+          };
+
+          kubeMcpConfig = pkgs.writeTextFile {
+            name = "kube-mcp-config.json";
+            text = builtins.toJSON mcps;
+          };
+
+        in
+        (lib.strings.join "," (
+          lib.optional config.kubernetes kubeMcpConfig.outPath
+        ));
+    };
 }

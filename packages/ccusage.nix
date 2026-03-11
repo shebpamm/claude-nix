@@ -7,6 +7,7 @@
   pnpm_10,
   pnpmConfigHook,
   makeWrapper,
+  jq,
 }:
 
 stdenv.mkDerivation (finalAttrs: {
@@ -25,6 +26,11 @@ stdenv.mkDerivation (finalAttrs: {
     pnpmConfigHook
     pnpm_10
     makeWrapper
+    jq
+  ];
+
+  buildInputs = [
+    jq
   ];
 
   pnpmDeps = fetchPnpmDeps {
@@ -38,21 +44,33 @@ stdenv.mkDerivation (finalAttrs: {
   # requires bun and is not needed for the CLI, so run tsdown directly.
   buildPhase = ''
     runHook preBuild
+
     cd apps/ccusage
     node_modules/.bin/tsdown
     cd ../..
+
+    cd apps/mcp
+    # Move all dependencies to devDependencies so that tsdown will inline them
+    jq '.devDependencies = (.devDependencies // {}) + (.dependencies // {}) | del(.dependencies)' package.json > package.tmp.json && mv package.tmp.json package.json
+    node_modules/.bin/tsdown
+    cd ../..
+
     runHook postBuild
   '';
 
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/lib/ccusage $out/bin
+    mkdir -p $out/lib/ccusage $out/lib/mcp $out/bin
 
     cp -r apps/ccusage/dist/ $out/lib/ccusage/
+    cp -r apps/mcp/dist/ $out/lib/mcp/
 
     makeWrapper ${nodejs_25}/bin/node $out/bin/ccusage \
       --add-flags "$out/lib/ccusage/dist/index.js"
+
+    makeWrapper ${nodejs_25}/bin/node $out/bin/ccusage-mcp \
+      --add-flags "$out/lib/mcp/dist/index.js"
 
     runHook postInstall
   '';

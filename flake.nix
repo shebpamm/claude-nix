@@ -27,11 +27,7 @@
             config.allowUnfree = true;
           };
 
-          # wrappers.pkgs = pkgs; # choose a different `pkgs`
-          wrappers.control_type = "exclude"; # | "build"  (default: "exclude")
-          wrappers.packages = {
-            hello = true; # <- set to true to exclude from being built into `packages.*.*` flake output
-          };
+          packages.ccusage = pkgs.callPackage ./packages/ccusage.nix {};
         };
       flake.wrappers.default = ./wrapper.nix;
     };
