@@ -21,13 +21,8 @@
   };
 
   config =
-    let
-      ccusage = pkgs.callPackage ./packages/ccusage.nix { };
-    in
     {
       package = pkgs.claude-code;
-
-      extraPackages = [ ccusage ];
 
       flags."--mcp-config" =
         let
@@ -39,10 +34,6 @@
               };
               nixos = {
                 command = "${pkgs.mcp-nixos}/bin/mcp-nixos";
-                args = [ ];
-              };
-              ccusage = {
-                command = "${ccusage}/bin/ccusage-mcp";
                 args = [ ];
               };
             };
