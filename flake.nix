@@ -33,5 +33,15 @@
         };
 
       flake.wrappers.default = ./wrapper.nix;
+      flake.homeModules = {
+        default = wrappers.lib.mkInstallModule {
+          name = "claude-code";
+          value = ./wrapper.nix;
+          loc = [
+            "home"
+            "packages"
+          ];
+        };
+      };
     };
 }
