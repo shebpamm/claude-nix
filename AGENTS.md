@@ -5,7 +5,7 @@ At the moment, this is a local repository which does not have an upstream. In th
 
 ## Build instructions
 
-build the project with `nix build`. The build artifact goes into `./result/bin/claude`, which is a shell script wrapping the `claude` binary. 
+build the project with `nix build`. The build artifact goes into `./result/bin/claude`, which is a shell script wrapping the `claude` binary.
 Reading this file will show the wrapped arguments we pass, such as extra binaries in path, cli flags and such.
 
 The project builds an mcp config into the nix store, the path can be found as an argument inside the shell script under `./result/bin`.

@@ -1,8 +1,9 @@
-{ config
-, wlib
-, lib
-, pkgs
-, ...
+{
+  config,
+  wlib,
+  lib,
+  pkgs,
+  ...
 }:
 {
   imports = [ wlib.modules.default ];
