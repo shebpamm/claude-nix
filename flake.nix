@@ -19,7 +19,7 @@
       systems = nixpkgs.lib.platforms.all;
 
       perSystem =
-        { pkgs, system, ... }:
+        { config, pkgs, system, ... }:
         {
           _module.args.pkgs = import self.inputs.nixpkgs {
             inherit system;
@@ -30,7 +30,13 @@
           devShells.default = pkgs.mkShell {
             buildInputs = [ self.packages.${system}.ccusage self.packages.${system}.default ];
           };
+
+          overlayAttrs = with config.packages; {
+            inherit ccusage;
+            claude-code = default;
+          };
         };
+
 
       flake.wrappers.default = ./wrapper.nix;
       flake.homeModules = {
