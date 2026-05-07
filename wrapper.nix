@@ -65,6 +65,11 @@
         export GRAFANA_EXTRA_HEADERS="{\"CF-Access-Client-Id\": \"$CF_CLIENT_ID\", \"CF-Access-Client-Secret\": \"$CF_CLIENT_SECRET\"}"
         exec ${pkgs.mcp-grafana}/bin/mcp-grafana "$@"
       '';
+
+      githubWrapper = pkgs.writeShellScript "mcp-github-wrapper" ''
+        export GITHUB_PERSONAL_ACCESS_TOKEN="$(${pkgs.gh}/bin/gh auth token)"
+        exec ${pkgs.github-mcp-server}/bin/github-mcp-server --read-only stdio "$@"
+      '';
     in
     {
       package = pkgs.claude-code;
@@ -92,8 +97,7 @@
 
             // lib.optionalAttrs config.github.enable {
               github = {
-                type = "http";
-                url = "https://api.githubcopilot.com/mcp/";
+                command = "${githubWrapper}";
               };
             };
 
