@@ -3,7 +3,7 @@
   stdenv,
   fetchFromGitHub,
   fetchPnpmDeps,
-  nodejs_25,
+  nodejs_26,
   pnpm_10,
   pnpmConfigHook,
   makeWrapper,
@@ -22,7 +22,7 @@ stdenv.mkDerivation (finalAttrs: {
   };
 
   nativeBuildInputs = [
-    nodejs_25
+    nodejs_26
     pnpmConfigHook
     pnpm_10
     makeWrapper
@@ -66,10 +66,10 @@ stdenv.mkDerivation (finalAttrs: {
     cp -r apps/ccusage/dist/ $out/lib/ccusage/
     cp -r apps/mcp/dist/ $out/lib/mcp/
 
-    makeWrapper ${nodejs_25}/bin/node $out/bin/ccusage \
+    makeWrapper ${nodejs_26}/bin/node $out/bin/ccusage \
       --add-flags "$out/lib/ccusage/dist/index.js"
 
-    makeWrapper ${nodejs_25}/bin/node $out/bin/ccusage-mcp \
+    makeWrapper ${nodejs_26}/bin/node $out/bin/ccusage-mcp \
       --add-flags "$out/lib/mcp/dist/index.js"
 
     runHook postInstall
